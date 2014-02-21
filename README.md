@@ -10,6 +10,8 @@ Not sure if the name TurtlePy will stick. It means nothing, but I like it.
 Reminds of a pie with turtle meat, just as odd as a turtle soup.
 Other suggested names:
 
+ * scrutipy	(an investigation, 84 hits)
+ * Basilisk	(1.800.000 hits)
  * Specularum	(a city name)
  * SpectaculiX	(the thing that does a spectaculum)
  * SpeculiX	(sikulix with a P for python)
@@ -18,6 +20,11 @@ Other suggested names:
  * cura		(care taker)
  * curapy	(python takes care)
  * idepix	(play on idefix, dog of asterix)
+ * PyLux	(oops, we already have pylux.com)
+ * Gambado	(a one-legged monster from D&D, 200.000 hits)
+ * CookiePy	
+ * kizziton	(10 hits!)
+ * tricklepy
 
 Criteria: 
  - not to easy to misunderstand 
