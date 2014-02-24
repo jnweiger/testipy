@@ -1,17 +1,17 @@
-turtlepy
-========
+testipy
+=======
 
-TurtlePy is a technology independent GUI-testing framework, inspired by SikuliX
+TestiPy is a technology independent GUI-testing framework, inspired by SikuliX
 
 
 Name
 ====
-Not sure if the name TurtlePy will stick. It means nothing, but I like it.
-Reminds of a pie with turtle meat, just as odd as a turtle soup.
+Not sure if the name TestiPy will stick. It is a mashup of test, python, and testify. Somehow I still prefer the name turtlepy, although it means nothing. Reminds of a pie with turtle meat, just as odd as a turtle soup.
 Other suggested names:
 
+ * testipy (20k hits)
  * scrutipy	(an investigation, 84 hits)
- * Basilisk	(1.800.000 hits)
+ * funnalaanz (0 hits, bavarian slang)
  * Specularum	(a city name)
  * SpectaculiX	(the thing that does a spectaculum)
  * SpeculiX	(sikulix with a P for python)
@@ -25,7 +25,9 @@ Other suggested names:
  * CookiePy	
  * kizziton	(10 hits!)
  * tricklepy
-
+ * Basilisk	(1.800.000 hits)
+ 
+ 
 Criteria: 
  - not to easy to misunderstand 
    * curapy -> crappy
