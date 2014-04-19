@@ -10,9 +10,10 @@ Not sure if the name TestiPy will stick. It is a mashup of test, python, and tes
 Other suggested names:
 
  * testipy (20k hits), but mine is first.
- * eyetestipy   (0 hits)
- * atestipy     (0 hits)
- * xtestipy     (0 hits)
+ * xtestipy     (0 hits, x like X11)
+ * qtestipy     (0 hits, q like quality)
+ * eyetestipy   (0 hits, eye like visual testing)
+ * atestipy     (0 hits, a like in attest?)
  * scrutipy	(an investigation, 84 hits)
  * funnalaanz (0 hits, bavarian slang)
  * Specularum	(a city name)

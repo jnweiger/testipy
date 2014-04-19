@@ -3,7 +3,7 @@
 Abstract
 ========
 
-TurtlePy is a technology independent GUI-testing framework, inspired by SikuliX.
+XTestiPy is a technology independent GUI-testing framework, inspired by SikuliX.
 It interacts with the system under test only through framebuffer output (pixels) and 
 keyboard/mouse input. The test script language is python.
 
@@ -49,3 +49,38 @@ igor
 jenkins
 -------
   collects reports, has a nice dashboard, but does not test anything itself.
+
+
+
+Research Refences
+=================
+  
+ https://github.com/NYPL/map-vectorizer employs python and openCV
+  OpenCV circle and cross detection
+ 
+ pypotrace from pypi.
+
+ autotrace library developed by Martin Weber. 
+	Corner detection is different that with potrace, but both look good.
+	http://autotrace.sourceforge.net/index.html#download is down. latest
+	release is from 2002.
+
+ Sonja Katrin Bayer: Bildschirmtypographie
+  - http://www.alles-buch.uni-erlangen.de/bayer.pdf
+  - Nach DIN EN ISO 9 241-3 soll aber das Verhältnis der höheren Leuchtdichte
+    zur niedrigeren Leuchtdichte mindestens 3:1 betragen (gemessen und
+    verglichen werden die Leuchtdichte im Inneren eines Buchstabens und auf dem
+    Buchstaben selbst). Als besonders schwer leserlich gilt blaue oder rote
+    Schrift auf schwarzem Hintergrund oder gelbe Schrift auf weißem
+    Hintergrund.  Darüber hinaus sind einige Farbkombinationen wie Blau auf Rot
+    oder Grün auf Lila zu vermeiden, was darin begründet liegt, dass das
+    menschliche Auge Farben mit weit auseinander liegenden Wellenlängen nicht
+    gleichzeitig scharf wahrnehmen kann
+  - Assuming that screen Designers adhere to these basic rules, we can derive 
+    the following artefacts: 
+    * color is irrelevant. We can reduce to a lumiosity gray map.
+    * lumiosity changes of 2:1 or less are irrelevant. That is badly readable by 
+      humans, so we can also ignore this. 
+    * We degrade contrast by adding a black level of ca 20. This simulates
+      reflections and ambient light in the human eye. It also helps against 
+      unintended good contrast in very dark areas.
