@@ -1,7 +1,13 @@
 #! /usr/bin/python
 #
 # Study http://www.qaautomation.net/?p=388
+#       http://www.realpython.com/blog/python/headless-selenium-testing-with-python-and-phantomjs
 # pydoc selenium.webdriver.remote.webelement
+#
+# sudo zypper in python-pip
+# sudo pip install selenium
+# ??what is brew??
+# sudo brew install phantomjs
 #
 from pprint import pprint
 from selenium import webdriver
@@ -11,6 +17,7 @@ def eprint(e):
   print("<%s> %r" % (e.tag_name, e.text[:60]))
 
 browser = webdriver.Firefox()
+#browser = webdriver.PhantomJS()
 browser.get('http://seleniumhq.org/')
 
 pprint(browser.title)

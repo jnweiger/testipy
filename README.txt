@@ -84,3 +84,26 @@ Research Refences
     * We degrade contrast by adding a black level of ca 20. This simulates
       reflections and ambient light in the human eye. It also helps against 
       unintended good contrast in very dark areas.
+  - Gesetz der visuellen Wahrnehmung: 
+    * der Nähe, 
+    * der Gleichheit/Ähnlichkeit, 
+    * der Guten Fortsetzung, 
+    * der Schliessung, 
+    * der Symmetrie
+  - Strichbreite soll 8 bis 117 Prozent der Schrifthöhe sein.
+  - Wesentliche Informationen werde aus der oberen Hälfte des Wortbildes bezogen.
+  ZZ
+
+ Edward L Delosh: Pattern Recognition
+  - http://lamar.colostate.edu/~bclegg/PY453/pattern_recognition.pdf
+  - Figure 3-2 features an example with a glyph that is halfway between A and H. 
+    Exploiting context it is still perfectly readable as THE CAT.
+
+Segmentation Algorithms
+=======================
+  Watershed Algorithm
+  - http://docs.opencv.org/trunk/doc/py_tutorials/py_imgproc/py_watershed/py_watershed.html
+  - extremly cool! 
+  P-Algorithm
+  - on http://cmm.ensmp.fr/~beucher/publi/P-Algorithm_SB_BM.pdf
+  - an improvement on watershed.
