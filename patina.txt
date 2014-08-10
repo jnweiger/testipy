@@ -1,0 +1,54 @@
+Patina is a screen recording tool.
+
+Technically, patina creates a transparent window spanning the entire screen, so that it sees all input events.
+Practically, it forwards all input events to the underlying applications as synthetic events, but questions the user about his actions 
+through an additional semi translucent chat window.
+
+it captures all mouse and keyborard (input events) and takes screenshots of 
+relevant portions of the screen, while a user operates his desktop applications.
+'Relevant' in this context is anything that changes, 
+and anything that is near the mouse pointer.
+
+When clicking elements on the GUI, patina attempts to identify GUI-Elements. E.g. rectangular areas that change color or move slightly 
+after a mouse-click are recorded as belonging to context of the click. Patina saves enough screenshots, so that additional area can easily 
+be added to the context later.
+
+The user is encouraged to explain his actions in the patina chat window. Here, patina asks questions about the users actions. Any responses 
+are recorded as also belonging to the current context. In this chat window, patina also reports what it sees happening.
+The user can comment on this report 'online'. Thus patina can become intrusive
+with regard to the users trian of thoughs. On the other hand, the user is free
+to ignore all comments and quesitons in the chat window. Patina will always
+behave non-blocking.
+
+As an alternate option how to control a GUI, the patina chat offers simple commands, that the user can employ, instead of mouse pointer or keyboard.
+Possible commands are: 
+
+Locate "Cancel"
+ -> a rectangular highlight is shown around the Cancel button of the most recently opened dialogue.
+ -> other feedback is shown, if there are multiple or no such buttons.
+Click this.
+ -> A normal left mouse button click is performed on the last selected element. 
+
+Goal is a recording session, with enough meta-informations, so that it can be turned into a script.
+
+At the end of a patina session, a skeleton replay script is generated. The more the user worked with patina commands or with correctly interpreted
+mouse guestures, the more valuable is this skeleton. A manual review session is typically needed to fine tune the script into a fully functional
+gui automation script.
+
+A patina script is a python program. Thus flow control, loops, variables and functions, and other language features can be used to make the script 
+efficient.
+
+
+OCR
+---
+Technically we need to perform much OCR inside of patina. As of this writing, tesseract appears to be the most advanced linux ocr engine.
+cuneiform produced inferior results on tested screen captures.
+Artefacts learned during experiments with tesseract:
+- Text of normal screen font size does not work. Tesseract starts recongizing text reliably, when the font size is above 20 pixels.
+  Thus we have to scale up all screen captures before passing them to tesseract. Then recognition is well in the 99% range. 
+- Tesseract often fails to recognize IP-Adresses, short (2 or 3 letter) abbreviations, and unusual punctuation.
+- Tesseract can recognize dark text on light backgrounds and light text on dark backgrounds in the same image.
+- The segmentation algorithm of tesseract sometimes rotates blocks and assums vertical text. When this happens, there is no hint in the hocr output.
+  Such will have the attribiute dir='ltr' just as normal horizontal text has. (Bug?)
+- If the image contains multiple areas of text in different colors and on different backgrounds, the recognition quality degrades.
+- If there are small (1,2 pixel dark) borders next to text, the result degrades dramatically.

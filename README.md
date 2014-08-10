@@ -10,6 +10,7 @@ Not sure if the name TestiPy will stick. It is a mashup of test, python, and tes
 Other suggested names:
 
  * testipy (20k hits), but mine is first.
+ * Horama	(200k hits, that which is seen, spectacle, a sight divinely granted in an ecstasy or in a sleep, a vision)
  * xtestipy     (0 hits, x like X11)
  * qtestipy     (0 hits, q like quality)
  * eyetestipy   (0 hits, eye like visual testing)
