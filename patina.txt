@@ -40,7 +40,7 @@ efficient.
 
 
 OCR
----
+===
 Technically we need to perform much OCR inside of patina. As of this writing, tesseract appears to be the most advanced linux ocr engine.
 cuneiform produced inferior results on tested screen captures.
 Artefacts learned during experiments with tesseract:
@@ -52,3 +52,30 @@ Artefacts learned during experiments with tesseract:
   Such will have the attribiute dir='ltr' just as normal horizontal text has. (Bug?)
 - If the image contains multiple areas of text in different colors and on different backgrounds, the recognition quality degrades.
 - If there are small (1,2 pixel dark) borders next to text, the result degrades dramatically.
+
+Segmentation
+------------
+We need to subdivide a screnshot into meaningful rectangles. These should exactly contain the contents of widows or widgets. 
+Borders and decorations seperated. The top window decoration usually has a title, this is sent to ocr too, to get the window title.
+
+Several techniques can be applied for segmentation:
+* Delta-Monioring. If, between two full screenshots, a window appears or
+  disappears, the bounding box of the area that contains the changes is taken
+  as the rectangle of relevant context. If the rectangle has decorations or
+  borders (at least one pixel wide),  we know that something appeared here. If
+  the patterns at the edges of the rectangle are similar to patterns outside
+  and inside the rectangle, then we can assume that something disappeared here.
+  If as a response to mouse movement or mouse clicks, screen contents changes,
+  then we assume the changes belong to (are context of) a sensitive or
+  clickable widget. Typical examples are button press and release events, that
+  make the button change color or location.
+  Checkboxes or radio buttons that show/hide a checkmark or bullet.
+
+* Flood-fill.
+  Starting at the center of the screen, we apply a subtractive or additive
+  low-pass filter, so that most text disappears. Adiditve filter for light
+  background, subtractive filter for dark background. Expand the area as long as the filter works with removing text.
+
+* Encircle.
+  Shoot horizontal or vertiacl line segments across the screen, to segment text into lines, and lines into words.
+
