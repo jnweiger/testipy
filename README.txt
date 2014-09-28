@@ -107,3 +107,29 @@ Segmentation Algorithms
   P-Algorithm
   - on http://cmm.ensmp.fr/~beucher/publi/P-Algorithm_SB_BM.pdf
   - an improvement on watershed.
+
+
+Textbox segmentation
+====================
+Given a screenshot from a computer screen. 
+Convert RGB to HLS. Run a spectral analysis on all three (six HLS+RGB ?) color components. 
+Apply maximum function.
+Scan horizontal lines for strings of highest frequencies.
+ - Ignore all hightfrequency noise that is below the ISO 9 241-3 thresholds.
+ - for every HF substring, 
+   * move upwards/downwards, until the HF signal strength is at a minimum.
+     There we have the upper/lower boundary of a text box. 
+   * The start/end of a HF substring are the left/right boundary of a text box.
+   * Add a safety margin of 2 or 3 pixels at each side.
+   * Convert the box to grayscale, stretch the histogram to fill at least 50% of the lumiosity range.  entire range.
+   * Run ocr on a sufficiently upscaled version of the rectangle.
+     - Run multiple passes with dovetailing into reduced top/left safety margin. Reduced to 0 or even -2 or -3 pixels.
+     - Take the ocr text result from the pass with the best quality metrics and denote its bounding box
+ - record frequencies statistics.
+ - Run again, with a downscaled version of the entire page, so that the typical frequencies are low pass filtered (smoothed away).
+ - Run again, with further downscales, until nothing remains recognized. 
+   This downscaling is an attempt to read banner text printed with ascii art, and similar higher order textures.
+
+Test cases:
+ - xdaliclock -transparent
+ - banner Hello World
