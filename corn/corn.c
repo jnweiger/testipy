@@ -11,9 +11,9 @@
 #include <stdio.h>
 #include <png.h>
 #include <zlib.h>
-#include <malloc.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include <malloc.h>	// malloc(), free()
+#include <stdlib.h>	// exit()
+#include <string.h>	// memcpy()
 
 #define IMG_MARGIN 5		// margin=2 supports 5x5 matrix folds.
 
@@ -207,7 +207,6 @@ struct img *img_load_png(char *filename, int margins)
 	  *b++ = *row++;
 	}
     }
-  png_read_end(png_ptr, (png_infop)NULL);
   png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
   fclose(ifp);
 
@@ -246,13 +245,59 @@ struct img *img_crop(struct img *img, struct img *p, int x, int y, int w, int h)
   p->margin_r = img->row_stride - p->margin_l - w;
   p->margin_b = hh - p->margin_t - h;
 
-  p->row_stride = img->row_stride;
+  p->w = w;
+  p->h = h;
+  p->row_stride = img->row_stride;	// harmless if img == p
 
   int off = IMG_OFF(img, p->margin_l, p->margin_t);
 
   p->r = img->mr + off;
   p->g = img->mg + off;
   p->b = img->mb + off;
+
+  return p;
+}
+
+// create a new image, with the same properties as img.
+// if pixels is nonzero, the colors are copied, otherwise
+// the image is created all black (which is faster).
+// 
+// additional data like png_ptr, info_ptr are not copied.
+
+struct img *img_clone(struct img *img, int pixels)
+{
+  struct img *p = (struct img *)calloc(1, sizeof(struct img));
+  p->margin_t = img->margin_t;
+  p->margin_b = img->margin_b;
+  p->margin_l = img->margin_l;
+  p->margin_r = img->margin_r;
+
+  p->w = img->w;
+  p->h = img->h;
+  p->row_stride = img->row_stride;
+
+  int area = (p->margin_t+p->margin_b+p->h) * p->row_stride;
+  if (pixels)
+    {
+      p->mr = (unsigned char *)malloc(area);
+      p->mg = (unsigned char *)malloc(area);
+      p->mb = (unsigned char *)malloc(area);
+      memcpy(p->mr, img->mr, area);
+      memcpy(p->mg, img->mg, area);
+      memcpy(p->mb, img->mb, area);
+    }
+  else
+    {
+      p->mr = (unsigned char *)calloc(1, area);
+      p->mg = (unsigned char *)calloc(1, area);
+      p->mb = (unsigned char *)calloc(1, area);
+    }
+
+  int off = IMG_OFF(p, p->margin_l, p->margin_t);
+
+  p->r = p->mr + off;
+  p->g = p->mg + off;
+  p->b = p->mb + off;
 
   return p;
 }
@@ -289,6 +334,134 @@ void img_write_ppm(struct img *img, char *filename)
     }
 }
 
+#ifndef MIN
+# define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef MAX
+# define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+
+// _img_Delta2() adds up both, first and second derivative.
+// return values are in [0..510]
+//
+// call with stride=img->row_stride for vertical deltas.
+// call with stride=1 for horizontal deltas.
+//
+static int inline _img_Delta2(unsigned char *r, int stride)
+{
+  int a = r[-stride] - r[0];
+  int b = r[0] - r[stride];
+
+  if ((a < 0 && b >= 0) ||
+      (b < 0 && a >= 0))
+    return abs(a-b);	      	// different sign
+  return MAX(abs(a), abs(b));	// same sign
+}
+
+struct img *img_corn_3x3(struct img *img)
+{
+  struct img *p = img_clone(img, 0);
+  int x, y;
+  /*
+ in 1d:
+
+0 9 9 => 9, 9 0 0 => 9, 0 0 9 => 9, 9 9 0 => 9
+0 5 9 => 5, 0 5 0 => 10, 0 9 0 => 18, 3 4 5 => 1, 6 5 4 => 1
+
+
+Gx[x,y] : a = [x-1,y] - [x,y]; b = [x,y] - [x+1,y]
+Gx[x,y] = (sgn(a) != sgn(b)) ? abs(a - b) : max(abs(a),abs(b))
+
+ in 2d: we use min( (3*Gy[x-1]+10*G[x]+3*G[x+1]),
+                    (3*G[y-1]+10*G[y]+3*G[y+1]) ) / (2 * 16);
+ The min() function helps us to ignore horizontal/vertical bars
+  and emphasizes diagonals/corners.
+
+ If we used max() instead, the result would be similar to 
+  Sobel or Scharr operators, but with less bleeding.
+
+0 9 0       9 9 9       9 0 9	    0 9 0
+0 9 0 => 0, 0 0 0 => 0, 0 9 0 => 9, 9 0 9 => 9
+0 9 0	    9 9 9       9 0 9       0 9 0
+
+   */
+
+  int stride = img->row_stride;
+  for (y = 0; y < img->h; y++)
+    {
+      unsigned char *r = IMG_R(p, 0, y);
+      unsigned char *g = IMG_G(p, 0, y);
+      unsigned char *b = IMG_B(p, 0, y);
+      unsigned char *r0 = IMG_R(img, 0, y);
+      unsigned char *g0 = IMG_G(img, 0, y);
+      unsigned char *b0 = IMG_B(img, 0, y);
+
+      for (x = 0; x < img->w; x++)
+        {
+#if 0
+          if ((x == 474) && (y == 173)) 
+            printf("%d\n", _img_Delta2(r0       ,1));
+#endif
+          int vr = 0;
+          int vg = 0;
+          int vb = 0;
+          int vv = 0;
+
+	  int s1 = 3 * _img_Delta2(r0-1,stride) + 
+	          10 * _img_Delta2(r0  ,stride) +
+		   3 * _img_Delta2(r0+1,stride);
+	  int s2 = 3 * _img_Delta2(r0-stride,1) + 
+	          10 * _img_Delta2(r0       ,1) +
+		   3 * _img_Delta2(r0+stride,1);
+	  s2 = (s1 * s2) >> 14; vr = MIN(s2, 255);
+	  // vr = MAX(s1, s2) >> 5;	// x>>5 aka x/(2*(3+10+3))
+	  // vr = MIN(s1, s2) >> 5;	// x>>5 aka x/(2*(3+10+3))
+	  // vr = (unsigned int)(0.5 * s1);
+	  vv = vr;
+	  r0++;
+
+          if (vv < 255)
+	    {
+		  s1 = 3 * _img_Delta2(g0-1,stride) + 
+		      10 * _img_Delta2(g0  ,stride) +
+		       3 * _img_Delta2(g0+1,stride);
+		  s2 = 3 * _img_Delta2(g0-stride,1) + 
+		      10 * _img_Delta2(g0       ,1) +
+		       3 * _img_Delta2(g0+stride,1);
+	      s2 = (s1 * s2) >> 14; vg = MIN(s2, 255);
+	      // vg = MAX(s1, s2) >> 5;	// x>>5 aka x/(2*(3+10+3))
+	      // vg = MIN(s1, s2) >> 5;	// x>>5 aka x/(2*(3+10+3))
+	      // vg = (unsigned int)(0.5 * s1);
+	      if (vv < vg) vv = vg;
+	    }
+	  g0++;
+
+          if (vv < 255)
+	    {
+		  s1 = 3 * _img_Delta2(b0-1,stride) + 
+		      10 * _img_Delta2(b0  ,stride) +
+		       3 * _img_Delta2(b0+1,stride);
+		  s2 = 3 * _img_Delta2(b0-stride,1) + 
+		      10 * _img_Delta2(b0       ,1) +
+		       3 * _img_Delta2(b0+stride,1);
+	      s2 = (s1 * s2) >> 14; vb = MIN(s2, 255);
+	      // vb = MAX(s1, s2) >> 5;	// x>>5 aka x/(2*(3+10+3))
+	      // vb = MIN(s1, s2) >> 5;	// x>>5 aka x/(2*(3+10+3))
+	      // vb = (unsigned int)(0.5 * s1);
+	      if (vv < vb) vv = vb;
+	    }
+	  b0++;
+
+          // grayscale output, vv=max(r,g,b)
+          *r++ = vv;
+	  *g++ = vv;
+	  *b++ = vv;
+	}
+    }
+
+  return p;
+}
+
 // read png image, process, and write a png image.
 int main(int ac, char **av)
 {
@@ -303,9 +476,13 @@ int main(int ac, char **av)
 
   struct img *img = img_load_png(infile, IMG_MARGIN);
 
+#if 0
   struct img *p = img_crop(img, NULL, -img->margin_l, -img->margin_t,
     img->w + img->margin_l + img->margin_r,
     img->h + img->margin_t + img->margin_b);
+#else
+  struct img *p = img_corn_3x3(img);
+#endif
   img_write_ppm(p, outfile);
 
   return 0;
