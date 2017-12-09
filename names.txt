@@ -1,0 +1,37 @@
+Names
+=====
+
+The name TestiPy is a mashup of test, python, and testify. 
+Other suggested names:
+
+ * testipy (20k hits), but mine is first.
+ * Horama	(200k hits, that which is seen, spectacle, a sight divinely granted in an ecstasy or in a sleep, a vision)
+ * xtestipy     (0 hits, x like X11)
+ * qtestipy     (0 hits, q like quality)
+ * eyetestipy   (0 hits, eye like visual testing)
+ * atestipy     (0 hits, a like in attest?)
+ * scrutipy	(an investigation, 84 hits)
+ * funnalaanz (0 hits, bavarian slang)
+ * Specularum	(a city name)
+ * SpectaculiX	(the thing that does a spectaculum)
+ * SpeculiX	(sikulix with a P for python)
+ * Impytus	(gaining pythonic momentum)
+ * mirus	(Hans, www.fraenkische-lebkuchen.de, oops, 500.000 hits)
+ * idepix	(12500 hits, play on idefix, dog of asterix)
+ * PyLux	(oops, we already have pylux.com)
+ * Gambado	(a one-legged monster from D&D, 200.000 hits)
+ * CookiePy	(30000 hits)
+ * kizziton	(10 hits!)
+ * saipua       (finnish, with soap)
+ * sapuia       (a flower??, system agnostic python user interface automation)
+
+ 
+Criteria: 
+ - not to easy to misunderstand 
+   * curapy -> crappy
+   * Specularum -> speculum
+ - can be spelled correctly when heard once.
+ - currently less than 5000 results on google
+ - pronouncable in de,en.
+
+
