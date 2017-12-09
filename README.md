@@ -9,6 +9,8 @@ It interacts with the system under test only through framebuffer output
 References
 ==========
 
+* https://github.com/atinfo/awesome-test-automation (list most of what is below, and more)
+
 * Selenium http://docs.seleniumhq.org/
 
 * https://github.com/msanders/autopy/
